@@ -1,18 +1,19 @@
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OpenBrowserPlugin = require('open-browser-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer-sunburst').BundleAnalyzerPlugin;
-
+const DashboardPlugin = require("webpack-dashboard/plugin");
+const fs = require('fs');
 
 const statementConfig = {
-    dir: './vueproj',
-    publicPath: `/vueproj`,
+    dir: './testowy',
+    publicPath: `/testowy`,
     websiteMain: {
-        title: "VUE app"
+        title: "testowa apka"
     }
-}
-const config = {
+};
 
+const config = {
+    mode: "development",
     entry: {
         entry: ["@babel/polyfill", `${statementConfig.dir}/application/app.js`]
     },
@@ -21,20 +22,22 @@ const config = {
         publicPath: `${statementConfig.publicPath}/dist/`,
         filename: "bundle.js"
     },
+
     //dev server configuration
     devServer: {
         before:(app,server)=>{
-                let {port} = server.options;
-                   let _info = server.log.info;
-                    // let open = new OpenBrowserPlugin({ url: 'http://localhost:8080' }).apply();
-                 server.log.info = (args) =>{
-                    return _info( args.match(/http:\/\/localhost/) ? `Server is Working at [ http://localhost:${port}/${statementConfig.dir.replace("./","")} ]` : args  )
-                 }
+            let {port} = server.options;
+               let _info = server.log.info;
+                // let open = new OpenBrowserPlugin({ url: 'http://localhost:8080' }).apply();
+             server.log.info = (args) =>{
+                return _info( args.match(/http:\/\/localhost/) ? `Server is Working at [ http://localhost:${port}/${statementConfig.dir.replace("./","")} ]` : args  )
+             }
         },
-
+        host: "localhost",
+        disableHostCheck: true,
         hotOnly: true,
         filename: "bundle.js",
-        port: 3000,
+        port: 4000,
         compress: true,
         historyApiFallback: {
             rewrites: [
@@ -95,12 +98,20 @@ const config = {
                 css: ["/scss/main.scss"]
             }
         }),
-        new OpenBrowserPlugin({ url: `http://localhost:3000/${statementConfig.dir.replace("./","")}` }),
-
+        new OpenBrowserPlugin({ url: `www.jsprojects.com/${statementConfig.dir.replace("./","")}/` }),
+        new DashboardPlugin({ port: 4000 })
     ]
-}
-
+};
 module.exports = () => {
+    console.log(process.env)
+    const projectPath =`${statementConfig.dir}/application`;
+    if(!fs.existsSync(projectPath) && !fs.existsSync(projectPath + '/app.js')){
+        fs.mkdirSync(projectPath,0o777);
+        fs.writeFileSync(projectPath+ '/app.js','console.log("success")',()=>{
+            console.log("created main file application")
+        });
+    }
+   return config;
 
-    return config;
-}
+};
+
