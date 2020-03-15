@@ -2,13 +2,21 @@ const path = require("path");
 const statementConfig = require("./configuration/stmconfig.js");
 const plugins = require("./configuration/plugin.js");
 const loaders = require("./configuration/loaders.js");
-const result  = require("./configuration/result");
+
 const fs = require('fs');
 
 const config = {
     mode: "development",
     devtool:"eval-cheap-module-source-map",
+    entry: {
+        main: ["@babel/polyfill", `${statementConfig.dir}/application/app.js`],
 
+    },
+    output: {
+        path: path.resolve(__dirname.replace("configuration",""), `${statementConfig.dir}/dist`),
+        publicPath: `${statementConfig.publicPath}/dist/`,
+        filename: "[name].bundle.js"
+    },
     //dev server configuration
     devServer: {
     before:(app,server)=>{
@@ -20,7 +28,6 @@ const config = {
         },
         host: "localhost",
         disableHostCheck: true,
-        hotOnly: true,
         filename: "bundle.js",
         port: 4000,
         compress: true,
@@ -47,9 +54,13 @@ const config = {
             publicPath: false
         }
     },
+
 };
 
-Object.assign(config,result,plugins,loaders);
+Object.assign(config,
+    plugins,
+   loaders
+);
 
 module.exports = () => {
     const projectPath =`${statementConfig.dir}/application`;

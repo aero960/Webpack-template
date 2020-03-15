@@ -1,3 +1,4 @@
+const statementConfig = require("./stmconfig.js");
 module.exports = {
     module: {
         rules: [

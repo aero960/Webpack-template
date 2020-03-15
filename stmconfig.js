@@ -1,7 +1,8 @@
  statementConfig = {
-    dir: './testowy',
+    dir: './jeszczeinny',
+
     rewrite: true
 };
 
 statementConfig.publicPath = statementConfig.dir.replace(".","");
- module.exports = statementConfig;
+module.exports = statementConfig;
