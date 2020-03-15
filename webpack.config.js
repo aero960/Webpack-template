@@ -1,7 +1,7 @@
 const path = require("path");
 const statementConfig = require("./configuration/stmconfig.js");
-const plugins = require("./configuration/plugin.js");
-const loaders = require("./configuration/loaders.js");
+const plugins = require(`${statementConfig.configurationFolder}/plugin.js`);
+const loaders = require(`${statementConfig.configurationFolder}/loaders.js`);
 
 const fs = require('fs');
 
@@ -53,7 +53,7 @@ const config = {
             warnings: false,
             publicPath: false
         }
-    },
+    }
 
 };
 
