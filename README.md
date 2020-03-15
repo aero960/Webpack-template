@@ -23,4 +23,6 @@
     * ```npm run start ``` to make server run
     
 * start coding in ```APPNAME/application/app.js```
+
+_NOTE_ : __**Change name of folder before run ```npm run build ```**
     
