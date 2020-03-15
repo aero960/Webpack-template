@@ -2,14 +2,13 @@ const path = require("path");
 const statementConfig = require("./configuration/stmconfig.js");
 const plugins = require(`${statementConfig.configurationFolder}/plugin.js`);
 const loaders = require(`${statementConfig.configurationFolder}/loaders.js`);
-
 const fs = require('fs');
 
 const config = {
     mode: "development",
     devtool:"eval-cheap-module-source-map",
     entry: {
-        main: ["@babel/polyfill", `${statementConfig.dir}/application/app.js`],
+        [statementConfig.name]: ["@babel/polyfill", `${statementConfig.dir}/application/app.js`],
 
     },
     output: {
@@ -64,6 +63,8 @@ Object.assign(config,
 
 module.exports = () => {
     const projectPath =`${statementConfig.dir}/application`;
+    if(!fs.existsSync(`${statementConfig.dir}`))
+        fs.mkdirSync(`${statementConfig.dir}`,0o777);
     if(!fs.existsSync(projectPath) && !fs.existsSync(projectPath + '/app.js')){
         fs.mkdirSync(projectPath,0o777);
         fs.writeFileSync(projectPath+ '/app.js','console.log("success")',()=>{
