@@ -2,15 +2,10 @@ const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OpenBrowserPlugin = require('open-browser-webpack-plugin')
 const DashboardPlugin = require("webpack-dashboard/plugin");
+const statementConfig = require("./stmconfig.js");
 const fs = require('fs');
 
-const statementConfig = {
-    dir: './testowy',
-    publicPath: `/testowy`,
-    websiteMain: {
-        title: "testowa apka"
-    }
-};
+statementConfig.publicPath = statementConfig.dir.replace(".","");
 
 const config = {
     mode: "development",
@@ -39,12 +34,12 @@ const config = {
         filename: "bundle.js",
         port: 4000,
         compress: true,
-        historyApiFallback: {
+        historyApiFallback: (statementConfig.rewrite) ? {
             rewrites: [
                 {from: new RegExp(`^\/${path.basename(statementConfig.dir)}\/+`).source, to: `/${statementConfig.dir}/index.html`},
                 {from: /.*/, to: '/assets/404template/index.html'}
             ]
-        },
+        }: {},
         stats: {
             colors: true,
             hash: false,
@@ -92,18 +87,14 @@ const config = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: statementConfig.websiteMain.title,
-            filename: `../index.html`,
-            files: {
-                css: ["/scss/main.scss"]
-            }
+            title: `${statementConfig.dir.replace("./","")} app`,
+            filename: `../index.html`
         }),
         new OpenBrowserPlugin({ url: `www.jsprojects.com/${statementConfig.dir.replace("./","")}/` }),
         new DashboardPlugin({ port: 4000 })
     ]
 };
 module.exports = () => {
-    console.log(process.env)
     const projectPath =`${statementConfig.dir}/application`;
     if(!fs.existsSync(projectPath) && !fs.existsSync(projectPath + '/app.js')){
         fs.mkdirSync(projectPath,0o777);
